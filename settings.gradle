@@ -1,0 +1,2 @@
+rootProject.name = "KindredTask"
+include ':app'
