@@ -20,11 +20,6 @@ class GamesListViewModel @Inject constructor(
     private var _errorMessage = MutableLiveData<String>()
     var errorMessage: LiveData<String> = _errorMessage
 
-    private var _showLoading = MutableLiveData<Boolean>()
-    var showLoading: LiveData<Boolean> = _showLoading
-
-    val loading = MutableLiveData<Boolean>()
-
     fun getListOfGames(jurisdiction: String,
                        brand: String,
                        deviceGroup: String,
@@ -32,21 +27,17 @@ class GamesListViewModel @Inject constructor(
                        currency: String,
                        categories: String,
                        clientId: String) {
-        _showLoading.postValue(true)
         viewModelScope.launch {
             try {
                 when (val response = gamesRepository.getAllGames(jurisdiction, brand, deviceGroup, locale, currency, categories,clientId)) {
                     is ResultData.Success -> {
-                        _showLoading.postValue(false)
                         gameList.postValue(response.data)
                     }
                     is ResultData.Error -> {
-                        _showLoading.postValue(false)
                         _errorMessage.postValue(response.exception.toString())
                     }
                 }
             } catch (e: Exception) {
-                _showLoading.postValue(false)
                 _errorMessage.postValue(e.message)
             }
         }
